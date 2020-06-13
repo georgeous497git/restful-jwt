@@ -8,21 +8,20 @@ import org.springframework.stereotype.Component;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 @Component
 public class ManagerTokenJWT {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(ManagerTokenJWT.class);
-	
-	private Algorithm algorithm = Algorithm.HMAC256(SECRET);
+
 	private static final String SECRET = "cl4v3_s3cr3t4";
 	private static final String USUARIO = "usuario";
 	private static final String TOKEN_VALIDO = "tokenValido";
+	private Algorithm algorithm = Algorithm.HMAC256(SECRET);
 	
 	
 	/** Metodo que generar el Token con las directivas de la libreria JWT **/
@@ -31,10 +30,8 @@ public class ManagerTokenJWT {
 		String token = null;
 		
 		try {
-			/** Para la creacion del token, en este ejemplo se hace uso del metodo withHeader(headerClaims)
-			 * para adicionar una variable al algoritmo de encriptacion que genera el Token,
-			 * en este caso esta se adiciona el parametro APPLICATION el cual despues es usado para
-			 * validar que el token corresponda a la aplicacion que se desea consultar **/
+			/** Para la creacion del token, se hace uso del metodo withIssuer(issuer)
+			 * para personalizar el token por cada usuario que ingrese a nuestra aplicación **/
 			token = JWT.create()
 					.withIssuer(issuer)
 					.sign(this.algorithm);
@@ -69,11 +66,11 @@ public class ManagerTokenJWT {
 		    
 		    LOGGER.info("El token es valido.");
 
-		} catch(TokenExpiredException te) {
-			LOGGER.error("Vigencia de token expirada.");
+		} catch(IllegalArgumentException ie) {
+			LOGGER.error("El algoritmo especificado para validar no es el mismo con el cual fue generado el Token. [{}]", ie.getMessage());
 			
-		} catch (JWTDecodeException e) {
-			LOGGER.error("El token no se pudo decodificar de forma exitosa. ", e.getMessage());
+		} catch (AlgorithmMismatchException ae) {
+			LOGGER.error("El algoritmo especificado para validar es nulo. [{}]", ae.getMessage());
 			
 		} catch(JWTVerificationException ve) {
 			LOGGER.error("El token no se verifico de manera correcta. [{}]", ve.getMessage());

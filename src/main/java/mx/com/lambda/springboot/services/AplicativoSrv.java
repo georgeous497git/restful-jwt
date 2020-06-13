@@ -37,7 +37,7 @@ public class AplicativoSrv {
 		/* Si el usuario si esta registrado se continua para construir el token */
 		if(validaUsuario(issuer)) {
 			
-			/* Metodo existente en el @Component que genera el token con la herramienta JWT */
+			/* Metodo existente en el @Component ManagerTokenJWT que genera el token con la herramienta JWT */
 			token = managerToken.buildToken(issuer);
 			
 			if(token == null) {
