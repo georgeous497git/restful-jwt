@@ -25,7 +25,7 @@ public class RestWS {
 	
 	@Autowired AplicativoSrv aplicativoSrv;
 	
-	/** Operacion para registrar al usuario, en este punto aun no interviene el Token */
+	/** Operacion para registrar al usuario, en este punto aun no interviene el Token **/
 	@GetMapping("/signUp")
 	public @ResponseBody SignUpResponse signUp(@RequestBody SignUpRequest request) {
 		
@@ -41,7 +41,7 @@ public class RestWS {
 		return signUp;
 	}
 	
-	/** Operacion para validar al usuario previamente registrado y generar el token que es devuelto como respuesta */
+	/** Operacion para validar al usuario previamente registrado y generar el token que es devuelto como respuesta **/
 	@PostMapping("/signIn")
 	public @ResponseBody TokenResponse signIn(@RequestBody SignInRequest request) {
 		
